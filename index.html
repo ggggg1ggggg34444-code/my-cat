@@ -105,16 +105,16 @@
         const windowBg = document.getElementById('window-bg');
         
         if (month === 11 || month === 0 || month === 1) {
-            windowBg.src = "https://unsplash.com";
+            windowBg.src = "https://rawpixel.com";
             msg.innerText = "За окном кружится пушистый снег... ❄️";
         } else if (month >= 2 && month <= 4) {
-            windowBg.src = "https://unsplash.com";
+            windowBg.src = "https://rawpixel.com";
             msg.innerText = "Весна пришла! Почки распускаются 🌱";
         } else if (month >= 5 && month <= 7) {
-            windowBg.src = "https://unsplash.com";
+            windowBg.src = "https://rawpixel.com";
             msg.innerText = "Жаркое лето за окошком! ☀️🏖️";
         } else {
-            windowBg.src = "https://unsplash.com";
+            windowBg.src = "https://rawpixel.com";
             msg.innerText = "Листопад за окном... Уютная осень 🍂";
         }
     }
@@ -212,18 +212,16 @@
         if (!isDragging) return;
         isDragging = false;
         touchId = null;
-        vx = Math.max(-12, Math.min(vx, 12));
-        vy = Math.max(-12, Math.min(vy, 12));
-    });
-
-    function updateStatus() {
-        document.getElementById('hunger').innerText = hunger;
-        document.getElementById('happiness').innerText = happiness;
-        if (hunger <= 0 || happiness <= 0) {
-            msg.innerText = "Басик уснул... 💤";
-        }
-    }
-
+vx = Math.max(-12, Math.min(vx, 12));
+vy = Math.max(-12, Math.min(vy, 12));
+});
+function updateStatus() {
+document.getElementById('hunger').innerText = hunger;
+document.getElementById('happiness').innerText = happiness;
+if (hunger <= 0 || happiness <= 0) {
+msg.innerText = "Басик уснул... 💤";
+}
+}
 function triggerAnimation(text) {
 if (hunger <= 0 || happiness <= 0) return;
 msg.innerText = text;
