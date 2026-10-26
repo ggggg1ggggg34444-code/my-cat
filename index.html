@@ -12,14 +12,14 @@
         /* Игровая зона */
         .game-field { flex-grow: 1; position: relative; display: flex; align-items: center; justify-content: center; margin: 10px 0; background: #f9f9f9; border-radius: 20px; border: 2px dashed #b2dfdb; overflow: hidden; }
         
-        /* Жестко ограничиваем фотку кота, чтобы она не перекрывала поле */
+        /* Кот */
         .cat-container { pointer-events: none; z-index: 1; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
         .cat-img { max-width: 70%; max-height: 220px; border-radius: 15px; transition: transform 0.2s; object-fit: contain; }
         .bounce { animation: bounceAnim 0.4s ease; }
         
-        /* Мячик крупнее и с высоким приоритетом клика */
-        .toy-ball { width: 60px; height: 60px; background: radial-gradient(circle at 20px 20px, #ff9800, #e65100); border-radius: 50%; position: absolute; bottom: 20px; left: calc(50% - 30px); cursor: grab; touch-action: none; box-shadow: 0 5px 10px rgba(0,0,0,0.3); z-index: 9999; }
-        .toy-ball:active { cursor: grabbing; transform: scale(1.1); }
+        /* Мячик с поддержкой физики */
+        .toy-ball { width: 55px; height: 55px; background: radial-gradient(circle at 18px 18px, #ff9800, #e65100); border-radius: 50%; position: absolute; cursor: grab; touch-action: none; box-shadow: 0 5px 10px rgba(0,0,0,0.3); z-index: 9999; left: 0; top: 0; }
+        .toy-ball:active { cursor: grabbing; }
 
         .status-container { display: flex; justify-content: space-around; background: #f5f5f5; padding: 10px; border-radius: 15px; }
         .status { font-size: 15px; font-weight: bold; color: #37474f; }
@@ -44,7 +44,7 @@
         <div class="status">🎉 Радость: <span id="happiness">100</span>%</div>
     </div>
     
-    <div id="message">Потащи мяч пальцем и кинь в Басика!</div>
+    <div id="message">Толкни мяч пальцем, пусть он полетает! 🏀</div>
     
     <div class="game-field" id="field">
         <div class="cat-container">
@@ -68,6 +68,140 @@
     const field = document.getElementById('field');
     const msg = document.getElementById('message');
 
+    // Настройки физики мяча
+    let ballX = 170; // Начальная позиция X
+    let ballY = 250; // Начальная позиция Y
+    let vx = 0;      // Скорость по X
+    let vy = 0;      // Скорость по Y
+    const gravity = 0.3;     // Сила притяжения вниз
+    const bounce = -0.7;      // Сила отскока от стен (минус меняет направление)
+    const friction = 0.98;    // Трение воздуха (замедление)
+    const ballSize = 55;
+
+    let isDragging = false;
+    let lastTouchX = 0;
+    let lastTouchY = 0;
+    let touchId = null;
+
+    // Установка мяча в стартовую позицию при запуске
+    setTimeout(() => {
+        const fieldRect = field.getBoundingClientRect();
+        ballX = (fieldRect.width / 2) - (ballSize / 2);
+        ballY = fieldRect.height - ballSize - 20;
+        updateBallPosition();
+    }, 100);
+
+    function updateBallPosition() {
+        ball.style.transform = `translate(${ballX}px, ${ballY}px)`;
+    }
+
+    // Движение мяча по законам физики
+    function animate() {
+        if (!isDragging) {
+            vy += gravity;    // Гравитация тянет вниз
+            vx *= friction;   // Трение замедляет движение
+            vy *= friction;
+            
+            ballX += vx;
+            ballY += vy;
+
+            const fieldRect = field.getBoundingClientRect();
+
+            // Отскок от правого и левого края
+            if (ballX + ballSize > fieldRect.width) {
+                ballX = fieldRect.width - ballSize;
+                vx *= bounce;
+            } else if (ballX < 0) {
+                ballX = 0;
+                vx *= bounce;
+            }
+
+            // Отскок от пола и потолка
+            if (ballY + ballSize > fieldRect.height) {
+                ballY = fieldRect.height - ballSize;
+                vy *= bounce;
+                // Дополнительное трение при качении по полу
+                vx *= 0.95; 
+            } else if (ballY < 0) {
+                ballY = 0;
+                vy *= bounce;
+            }
+
+            updateBallPosition();
+
+            // Проверка, поймал ли Басик летящий мяч
+            if ((Math.abs(vx) > 0.5 || Math.abs(vy) > 0.5) && checkCollision()) {
+                happiness = Math.min(100, happiness + 5);
+                triggerAnimation("Басик поймал летящий мяч! 🏀👏");
+                // Мяч немного отскакивает от кота при ударе
+                vx *= -0.5;
+                vy *= -0.5;
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+
+    // Тач-события для телефона
+    ball.addEventListener('touchstart', (e) => {
+        if (hunger <= 0 || happiness <= 0) return;
+        isDragging = true;
+        vx = 0;
+        vy = 0;
+        const touch = e.changedTouches[0];
+        touchId = touch.identifier;
+        
+        const fieldRect = field.getBoundingClientRect();
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+        
+        e.preventDefault();
+    }, { passive: false });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        let touch = null;
+        for (let i = 0; i < e.touches.length; i++) {
+            if (e.touches[i].identifier === touchId) {
+                touch = e.touches[i];
+                break;
+            }
+        }
+        if (!touch) return;
+        e.preventDefault();
+
+        const fieldRect = field.getBoundingClientRect();
+        
+        // Перемещаем мяч за пальцем
+        ballX = touch.clientX - fieldRect.left - (ballSize / 2);
+        ballY = touch.clientY - fieldRect.top - (ballSize / 2);
+
+        // Ограничиваем внутри поля при перетаскивании
+        ballX = Math.max(0, Math.min(ballX, fieldRect.width - ballSize));
+        ballY = Math.max(0, Math.min(ballY, fieldRect.height - ballSize));
+
+        // Вычисляем скорость броска на основе движения пальца
+        vx = touch.clientX - lastTouchX;
+        vy = touch.clientY - lastTouchY;
+
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+
+        updateBallPosition();
+    }, { passive: false });
+
+    window.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        touchId = null;
+        
+        // Ограничиваем максимальную скорость, чтобы мяч не улетал в космос
+        vx = Math.max(-15, Math.min(vx, 15));
+        vy = Math.max(-15, Math.min(vy, 15));
+    });
+
+    // Обычные функции тамагочи
     function updateStatus() {
         document.getElementById('hunger').innerText = hunger;
         document.getElementById('happiness').innerText = happiness;
@@ -101,67 +235,6 @@
         triggerAnimation("Мур-мур... Басику приятно! 🥰");
     }
 
-    // НАДЕЖНОЕ ПЕРЕТАСКИВАНИЕ ДЛЯ СЕНСОРНЫХ ЭКРАНОВ
-    let isDragging = false;
-    let touchId = null;
-
-    ball.addEventListener('touchstart', (e) => {
-        if (hunger <= 0 || happiness <= 0) return;
-        isDragging = true;
-        const touch = e.changedTouches[0];
-        touchId = touch.identifier;
-        e.preventDefault();
-    }, { passive: false });
-
-    window.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        
-        // Ищем нужное прикосновение
-        let touch = null;
-        for (let i = 0; i < e.touches.length; i++) {
-            if (e.touches[i].identifier === touchId) {
-                touch = e.touches[i];
-                break;
-            }
-        }
-        
-        if (!touch) return;
-        e.preventDefault(); // Запрещаем прокрутку экрана телефона
-
-        const fieldRect = field.getBoundingClientRect();
-        
-        // Считаем позицию мяча относительно игрового поля
-        let newX = touch.clientX - fieldRect.left - 30; 
-        let newY = touch.clientY - fieldRect.top - 30;
-
-        // Держим мяч строго в границах поля
-        newX = Math.max(0, Math.min(newX, fieldRect.width - 60));
-        newY = Math.max(0, Math.min(newY, fieldRect.height - 60));
-        
-        ball.style.left = newX + 'px';
-        ball.style.top = newY + 'px';
-
-        // Проверяем попадание в котика
-        if (checkCollision()) {
-            happiness = Math.min(100, happiness + 10);
-            triggerAnimation("Ура, поймал мячик! 🏀🎉");
-            endDrag();
-        }
-    }, { passive: false });
-
-    window.addEventListener('touchend', endDrag);
-    window.addEventListener('touchcancel', endDrag);
-
-    function endDrag() {
-        if (!isDragging) return;
-        isDragging = false;
-        touchId = null;
-        // Возвращаем мяч на место
-        ball.style.left = 'calc(50% - 30px)';
-        ball.style.top = '';
-        ball.style.bottom = '20px';
-    }
-
     function checkCollision() {
         const ballRect = ball.getBoundingClientRect();
         const catRect = cat.getBoundingClientRect();
@@ -175,7 +248,7 @@
     setInterval(() => {
         if (hunger > 0 && happiness > 0) {
             hunger = Math.max(0, hunger - 3);
-            happiness = Math.max(0, hunger - 4);
+            happiness = Math.max(0, happiness - 4);
             updateStatus();
         }
     }, 5000);
