@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Виртуальный Кот 🐾</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background: #ffe4e1; text-align: center; margin: 0; padding: 20px; }
+        .game-card { background: white; max-width: 400px; margin: 0 auto; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .cat { font-size: 80px; margin: 20px 0; transition: transform 0.2s; display: inline-block; }
+        .status { font-size: 18px; margin: 10px 0; color: #555; }
+        .btn { background: #ff6b6b; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 10px; cursor: pointer; margin: 5px; transition: 0.2s; }
+        .btn:hover { background: #ff4747; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <h1>Кот по имени Барсик 🐱</h1>
+    <div id="cat-pic" class="cat">😺</div>
+    
+    <div class="status">Сытость: <span id="hunger">100</span>%</div>
+    <div class="status">Настроение: <span id="happiness">100</span>%</div>
+    <div id="message" style="color: #ff6b6b; font-weight: bold; min-height: 24px;"></div>
+
+    <button class="btn" onclick="feed()">Покормить 🐟</button>
+    <button class="btn" onclick="play()">Погладить/Поиграть 🧸</button>
+</div>
+
+<script>
+    let hunger = 100;
+    let happiness = 100;
+    const catPic = document.getElementById('cat-pic');
+
+    function updateStatus() {
+        document.getElementById('hunger').innerText = hunger;
+        document.getElementById('happiness').innerText = happiness;
+
+        if (hunger <= 0 || happiness <= 0) {
+            catPic.innerText = '😿';
+            document.getElementById('message').innerText = 'Кот обиделся и ушел спать...';
+        } else if (hunger < 40 || happiness < 40) {
+            catPic.innerText = '😾';
+            document.getElementById('message').innerText = 'Кот недоволен! Срочно покорми или погладь!';
+        } else {
+            catPic.innerText = '😺';
+        }
+    }
+
+    function feed() {
+        if (hunger <= 0 || happiness <= 0) return;
+        hunger = Math.min(100, hunger + 20);
+        catPic.innerText = '😸';
+        document.getElementById('message').innerText = 'Муррр! Вкусно! 🐟';
+        setTimeout(updateStatus, 1000);
+    }
+
+    function play() {
+        if (hunger <= 0 || happiness <= 0) return;
+        happiness = Math.min(100, happiness + 20);
+        catPic.innerText = '😻';
+        document.getElementById('message').innerText = 'Тыгдык-тыгдык! 🎉';
+        setTimeout(updateStatus, 1000);
+    }
+
+    // Кот постепенно хочет есть и скучает
+    setInterval(() => {
+        if (hunger > 0 && happiness > 0) {
+            hunger = Math.max(0, hunger - 5);
+            happiness = Math.max(0, happiness - 5);
+            updateStatus();
+        }
+    }, 3000);
+</script>
+
+</body>
+</html>
