@@ -16,7 +16,8 @@
 <body>
 
 <div class="game-card">
-    <h1>Кот по имени Барсик 🐱</h1>
+    <h1>Кот по имени басик 😺</h1>
+                  
     <div id="cat-pic" class="cat">😺</div>
     
     <div class="status">Сытость: <span id="hunger">100</span>%</div>
@@ -38,10 +39,10 @@
 
         if (hunger <= 0 || happiness <= 0) {
             catPic.innerText = '😿';
-            document.getElementById('message').innerText = 'Кот обиделся и ушел спать...';
+            document.getElementById('message').innerText = 'бася обиделся и ушел спать...';
         } else if (hunger < 40 || happiness < 40) {
             catPic.innerText = '😾';
-            document.getElementById('message').innerText = 'Кот недоволен! Срочно покорми или погладь!';
+            document.getElementById('message').innerText = 'бася недоволен! Срочно покорми или погладь!';
         } else {
             catPic.innerText = '😺';
         }
