@@ -52,7 +52,7 @@
         <div class="room-floor"></div>
 
         <div class="window">
-            <img id="window-bg" class="window-view" src="https://unsplash.com" alt="Погода">
+            <img id="window-bg" class="window-view" src="" alt="Погода">
             <div class="window-frame v"></div>
             <div class="window-frame h"></div>
         </div>
@@ -176,7 +176,7 @@
         if (hunger <= 0 || happiness <= 0) return;
         isDragging = true;
         vx = 0; vy = 0;
-        const touch = e.changedTouches[0];
+        const touch = e.changedTouches;
         touchId = touch.identifier;
         lastTouchX = touch.clientX;
         lastTouchY = touch.clientY;
@@ -220,9 +220,10 @@
         document.getElementById('hunger').innerText = hunger;
         document.getElementById('happiness').innerText = happiness;
         if (hunger <= 0 || happiness <= 0) {
-msg.innerText = "Басик уснул... 💤";
-}
-}
+            msg.innerText = "Басик уснул... 💤";
+        }
+    }
+
 function triggerAnimation(text) {
 if (hunger <= 0 || happiness <= 0) return;
 msg.innerText = text;
@@ -256,4 +257,3 @@ happiness = Math.max(0, happiness - 3);
 updateStatus();
 }
 }, 6000);
-        
