@@ -1,32 +1,32 @@
-<!DOCTYPE<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Мой Виртуальный Басик 🐾</title>
     <style>
-        body { font-family: 'Arial', sans-serif; background: #e0f7fa; text-align: center; margin: 0; padding: 10px; user-select: none; }
-        .game-container { background: white; max-width: 450px; height: 85vh; margin: 10px auto; padding: 20px; border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-        h1 { margin: 5px 0; color: #006064; font-size: 24px; }
+        body { font-family: 'Arial', sans-serif; background: #e0f7fa; text-align: center; margin: 0; padding: 10px; user-select: none; -webkit-user-select: none; touch-action: none; }
+        .game-container { background: white; max-width: 450px; height: 90vh; margin: 5px auto; padding: 15px; border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-sizing: border-box; }
+        h1 { margin: 5px 0; color: #006064; font-size: 22px; }
         
-        /* Игровая зона с котом */
-        .game-field { flex-grow: 1; position: relative; display: flex; align-items: center; justify-content: center; margin: 15px 0; background: #f9f9f9; border-radius: 20px; border: 2px dashed #b2dfdb; }
+        /* Игровая зона */
+        .game-field { flex-grow: 1; position: relative; display: flex; align-items: center; justify-content: center; margin: 10px 0; background: #f9f9f9; border-radius: 20px; border: 2px dashed #b2dfdb; overflow: hidden; }
         
-        /* Картинка кота */
-        .cat-img { max-width: 80%; max-height: 250px; border-radius: 15px; transition: transform 0.2s, filter 0.2s; object-fit: contain; }
+        /* Жестко ограничиваем фотку кота, чтобы она не перекрывала поле */
+        .cat-container { pointer-events: none; z-index: 1; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        .cat-img { max-width: 70%; max-height: 220px; border-radius: 15px; transition: transform 0.2s; object-fit: contain; }
         .bounce { animation: bounceAnim 0.4s ease; }
         
-        /* Мячик, который можно кидать */
-        .toy-ball { width: 50px; height: 50px; background: radial-gradient(circle at 15px 15px, #ff9800, #e65100); border-radius: 50px; position: absolute; bottom: 20px; left: calc(50% - 25px); cursor: grab; touch-action: none; box-shadow: 0 5px 10px rgba(0,0,0,0.2); z-index: 10; transition: transform 0.1s; }
-        .toy-ball:active { cursor: grabbing; scale: 1.1; }
+        /* Мячик крупнее и с высоким приоритетом клика */
+        .toy-ball { width: 60px; height: 60px; background: radial-gradient(circle at 20px 20px, #ff9800, #e65100); border-radius: 50%; position: absolute; bottom: 20px; left: calc(50% - 30px); cursor: grab; touch-action: none; box-shadow: 0 5px 10px rgba(0,0,0,0.3); z-index: 9999; }
+        .toy-ball:active { cursor: grabbing; transform: scale(1.1); }
 
         .status-container { display: flex; justify-content: space-around; background: #f5f5f5; padding: 10px; border-radius: 15px; }
-        .status { font-size: 16px; font-weight: bold; color: #37474f; }
-        #message { color: #00796b; font-weight: bold; min-height: 20px; margin: 5px 0; font-size: 15px; }
+        .status { font-size: 15px; font-weight: bold; color: #37474f; }
+        #message { color: #00796b; font-weight: bold; min-height: 20px; margin: 5px 0; font-size: 14px; }
         
-        .buttons { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+        .buttons { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
         .btn { background: #00838f; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 15px; cursor: pointer; flex: 1; transition: 0.2s; font-weight: bold; }
-        .btn:hover { background: #006064; }
         
         @keyframes bounceAnim {
             0%, 100% { transform: scale(1); }
@@ -44,10 +44,12 @@
         <div class="status">🎉 Радость: <span id="happiness">100</span>%</div>
     </div>
     
-    <div id="message">Поиграй со мной в мяч или покорми!</div>
+    <div id="message">Потащи мяч пальцем и кинь в Басика!</div>
     
     <div class="game-field" id="field">
-        <img id="cat" class="cat-img" src="MVIMG_20261008_193929.jpg" alt="Басик">
+        <div class="cat-container">
+            <img id="cat" class="cat-img" src="MVIMG_20261008_193929.jpg" alt="Басик">
+        </div>
         <div id="ball" class="toy-ball"></div>
     </div>
 
@@ -69,21 +71,13 @@
     function updateStatus() {
         document.getElementById('hunger').innerText = hunger;
         document.getElementById('happiness').innerText = happiness;
-        
         if (hunger <= 0 || happiness <= 0) {
             msg.innerText = "Басик уснул от усталости... 💤";
-            cat.style.filter = "grayscale(80%)";
-        } else if (hunger < 40 || happiness < 40) {
-            msg.innerText = "Мяу! Басик проголодался или скучает! 😿";
-            cat.style.filter = "none";
-        } else {
-            cat.style.filter = "none";
         }
     }
 
     function triggerAnimation(text) {
         if (hunger <= 0 || happiness <= 0) return;
-        
         msg.innerText = text;
         cat.classList.add('bounce');
         cat.src = "MVIMG_20261008_193930.jpg"; 
@@ -107,64 +101,67 @@
         triggerAnimation("Мур-мур... Басику приятно! 🥰");
     }
 
-    // МЕХАНИКА ИГРЫ В МЯЧ
+    // НАДЕЖНОЕ ПЕРЕТАСКИВАНИЕ ДЛЯ СЕНСОРНЫХ ЭКРАНОВ
     let isDragging = false;
-    let startX, startY;
+    let touchId = null;
 
-    ball.addEventListener('mousedown', startDrag);
-    ball.addEventListener('touchstart', startDrag, { passive: true });
-
-    function startDrag(e) {
+    ball.addEventListener('touchstart', (e) => {
         if (hunger <= 0 || happiness <= 0) return;
         isDragging = true;
-        const event = e.touches ? e.touches : e;
-        startX = event.clientX - ball.offsetLeft;
-        startY = event.clientY - ball.offsetTop;
-        
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('touchmove', drag, { passive: false });
-        document.addEventListener('mouseup', stopDrag);
-        document.addEventListener('touchend', stopDrag);
-    }
+        const touch = e.changedTouches[0];
+        touchId = touch.identifier;
+        e.preventDefault();
+    }, { passive: false });
 
-    function drag(e) {
+    window.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
-        if (e.cancelable) e.preventDefault();
         
-        const event = e.touches ? e.touches : e;
+        // Ищем нужное прикосновение
+        let touch = null;
+        for (let i = 0; i < e.touches.length; i++) {
+            if (e.touches[i].identifier === touchId) {
+                touch = e.touches[i];
+                break;
+            }
+        }
+        
+        if (!touch) return;
+        e.preventDefault(); // Запрещаем прокрутку экрана телефона
+
         const fieldRect = field.getBoundingClientRect();
         
-        let newX = event.clientX - startX;
-        let newY = event.clientY - startY;
-        
-        newX = Math.max(0, Math.min(newX, fieldRect.width - 50));
-        newY = Math.max(0, Math.min(newY, fieldRect.height - 50));
+        // Считаем позицию мяча относительно игрового поля
+        let newX = touch.clientX - fieldRect.left - 30; 
+        let newY = touch.clientY - fieldRect.top - 30;
+
+        // Держим мяч строго в границах поля
+        newX = Math.max(0, Math.min(newX, fieldRect.width - 60));
+        newY = Math.max(0, Math.min(newY, fieldRect.height - 60));
         
         ball.style.left = newX + 'px';
         ball.style.top = newY + 'px';
-        ball.style.bottom = 'auto';
 
+        // Проверяем попадание в котика
         if (checkCollision()) {
-            happiness = Math.min(100, happiness + 5);
+            happiness = Math.min(100, happiness + 10);
             triggerAnimation("Ура, поймал мячик! 🏀🎉");
-            stopDrag();
-            resetBall();
+            endDrag();
         }
-    }
+    }, { passive: false });
 
-    function stopDrag() {
+    window.addEventListener('touchend', endDrag);
+    window.addEventListener('touchcancel', endDrag);
+
+    function endDrag() {
+        if (!isDragging) return;
         isDragging = false;
-        document.removeEventListener('mousemove', drag);
-        document.removeEventListener('touchmove', drag);
-    }
-
-    function resetBall() {
-        ball.style.left = 'calc(50% - 25px)';
-        ball.style.top = 'auto';
+        touchId = null;
+        // Возвращаем мяч на место
+        ball.style.left = 'calc(50% - 30px)';
+        ball.style.top = '';
         ball.style.bottom = '20px';
     }
 
-    // Проверка столкновения мяча с котом
     function checkCollision() {
         const ballRect = ball.getBoundingClientRect();
         const catRect = cat.getBoundingClientRect();
@@ -175,15 +172,15 @@
                  ballRect.top > catRect.bottom);
     }
 
-    // Трата сил со временем
     setInterval(() => {
         if (hunger > 0 && happiness > 0) {
-            hunger = Math.max(0, hunger - 4);
-            happiness = Math.max(0, happiness - 6);
+            hunger = Math.max(0, hunger - 3);
+            happiness = Math.max(0, hunger - 4);
             updateStatus();
         }
-    }, 4000);
+    }, 5000);
 </script>
 
 </body>
 </html>
+
