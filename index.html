@@ -11,12 +11,10 @@
         .game-field { flex-grow: 1; position: relative; margin: 10px 0; background: #e5e5e5; border-radius: 25px; overflow: hidden; box-shadow: inset 0 5px 15px rgba(0,0,0,0.05); }
         .room-walls { position: absolute; width: 100%; height: 70%; background: #f4f4f4; border-bottom: 8px solid #dcdcdc; }
         .room-floor { position: absolute; bottom: 0; width: 100%; height: 30%; background: #ececec; }
-        
         .window { position: absolute; top: 20px; left: 30px; width: 90px; height: 110px; background: #e3f2fd; border: 4px solid #ffffff; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; z-index: 1; font-size: 45px; }
         .window-frame { position: absolute; background: #ffffff; }
         .window-frame.v { width: 4px; height: 100%; left: 50%; transform: translateX(-50%); }
         .window-frame.h { height: 4px; width: 100%; top: 40%; }
-        
         .sofa { position: absolute; bottom: 25%; right: -20px; width: 160px; height: 95px; background: #333333; border-radius: 20px 0 0 15px; z-index: 2; box-shadow: -5px 5px 15px rgba(0,0,0,0.1); }
         .sofa-cushion { position: absolute; bottom: 0; left: 10px; width: 140px; height: 45px; background: #4f4f4f; border-radius: 10px 0 0 10px; }
         .sofa-pillow { position: absolute; top: 15px; left: 20px; width: 35px; height: 35px; background: #7a7a7a; border-radius: 8px; transform: rotate(-15deg); }
@@ -24,9 +22,7 @@
         .cat-container { pointer-events: none; z-index: 3; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; position: absolute; bottom: -15px; }
         .cat-img { max-width: 65%; max-height: 200px; border-radius: 15px; transition: transform 0.2s; object-fit: contain; }
         .bounce { animation: bounceAnim 0.4s ease; }
-        
         .toy-ball { width: 55px; height: 55px; background: radial-gradient(circle at 18px 18px, #ff9800, #e65100); border-radius: 50%; position: absolute; cursor: grab; touch-action: none; box-shadow: 0 8px 15px rgba(0,0,0,0.3); z-index: 9999; left: 0; top: 0; }
-        
         .status-container { display: flex; justify-content: space-around; background: #f8f9fa; padding: 10px; border-radius: 15px; border: 1px solid #eaeaea; }
         .status { font-size: 14px; font-weight: bold; color: #555555; }
         #message { color: #333333; font-weight: bold; min-height: 20px; margin: 5px 0; font-size: 14px; }
@@ -234,7 +230,7 @@
         cat.src = "MVIMG_20261008_193930.jpg";
 
         setTimeout(() => {
-cat.classList.remove('bounce');
+            cat.classList.remove('bounce');
 cat.src = "MVIMG_20261008_193929.jpg";
 updateStatus();
 }, 1200);
