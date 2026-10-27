@@ -22,56 +22,58 @@
             border-radius: 24px;
             box-shadow: 0 12px 32px rgba(0,0,0,0.15);
             text-align: center;
-            width: 340px;
+            /* Увеличили общую ширину карточки игры */
+            width: 440px; 
         }
         h1 { color: #1a1a1a; font-size: 22px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* 2D-Интерьер в стиле инди-игры (Черно-бело-серый) */
+        /* Большая игровая зона */
         .sofa-zone {
             background-color: #f0f0f0; 
             border: 4px solid #1a1a1a;
             border-radius: 16px;
-            height: 250px;
+            width: 440px;
+            height: 340px; /* Увеличили высоту комнаты */
             position: relative;
             overflow: hidden;
             margin-bottom: 15px;
         }
         
-        /* Минималистичное 2D окно на стене */
+        /* 2D окно на стене */
         .indie-window {
             position: absolute;
-            top: 20px;
-            left: 30px;
-            width: 60px;
-            height: 70px;
+            top: 25px;
+            left: 35px;
+            width: 70px;
+            height: 80px;
             border: 3px solid #1a1a1a;
             background: #ffffff;
             display: flex;
             flex-wrap: wrap;
         }
         .window-pane {
-            width: 27px;
-            height: 32px;
+            width: 32px;
+            height: 37px;
             border: 1px solid #1a1a1a;
         }
 
-        /* Простой схематичный серый диванчик по центру */
+        /* Серый диванчик по центру увеличенной комнаты */
         .indie-sofa {
             position: absolute;
-            bottom: 45px;
-            left: 75px;
-            width: 190px;
-            height: 75px;
+            bottom: 60px;
+            left: 100px;
+            width: 240px;
+            height: 85px;
             background: #cccccc;
             border: 4px solid #1a1a1a;
             border-radius: 12px 12px 4px 4px;
         }
         .sofa-back {
             position: absolute;
-            top: -30px;
-            left: 10px;
-            width: 162px;
-            height: 35px;
+            top: -35px;
+            left: 12px;
+            width: 208px;
+            height: 40px;
             background: #b3b3b3;
             border: 4px solid #1a1a1a;
             border-radius: 8px 8px 0 0;
@@ -80,21 +82,20 @@
         /* Узорчатый коврик на полу */
         .indie-rug {
             position: absolute;
-            bottom: 10px;
-            left: 95px;
-            width: 150px;
-            height: 25px;
+            bottom: 15px;
+            left: 120px;
+            width: 200px;
+            height: 30px;
             background: #e0e0e0;
             border: 3px solid #1a1a1a;
             border-radius: 50%;
-            /* Схематичный узор в полоску */
-            background-image: repeating-linear-gradient(90deg, transparent, transparent 10px, #1a1a1a 10px, #1a1a1a 12px);
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 12px, #1a1a1a 12px, #1a1a1a 14px);
         }
         
-        /* Интерактивное перетаскиваемое фото кота */
+        /* Перетаскиваемый кот */
         .cat-photo {
-            width: 90px;
-            height: 90px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid #1a1a1a;
@@ -102,24 +103,24 @@
             position: absolute;
             cursor: grab;
             z-index: 10;
-            touch-action: none; /* Предотвращает лаги скролла на смартфонах */
+            touch-action: none;
         }
         .cat-photo:active { cursor: grabbing; }
         
         /* Мяч с физикой */
         .toy-ball {
             position: absolute;
-            width: 34px;
-            height: 34px;
-            font-size: 30px;
-            line-height: 34px;
+            width: 38px;
+            height: 38px;
+            font-size: 34px;
+            line-height: 38px;
             text-align: center;
             cursor: pointer;
             z-index: 5;
             will-change: transform;
         }
         
-        /* Шкалы интерфейса */
+        /* Шкалы */
         .status-bar { margin: 12px 0; text-align: left; }
         .label { font-weight: bold; color: #1a1a1a; font-size: 13px; margin-bottom: 4px; }
         .progress-bg { background: #e0e0e0; border: 2px solid #1a1a1a; border-radius: 6px; height: 14px; overflow: hidden; }
@@ -143,7 +144,6 @@
     <h1>Виртуальный Басик 🐾</h1>
     
     <div class="sofa-zone" id="room">
-        <!-- 2D Векторные элементы комнаты -->
         <div class="indie-window">
             <div class="window-pane"></div><div class="window-pane"></div>
             <div class="window-pane"></div><div class="window-pane"></div>
@@ -153,14 +153,14 @@
         </div>
         <div class="indie-rug"></div>
 
-        <!-- Кот (Перетаскиваемый) -->
-        <img id="catImg" class="cat-photo" src="MVIMG_20261008_193929.jpg" alt="Мой Кот" style="left: 125px; top: 70px;">
+        <!-- Кот -->
+        <img id="catImg" class="cat-photo" src="MVIMG_20261008_193929.jpg" alt="Мой Кот" style="left: 170px; top: 110px;">
         
         <!-- Мяч -->
         <div id="ball" class="toy-ball">⚽</div>
     </div>
     
-    <div id="message" class="message">Перетаскивай Басика за шкирку или пни мяч! 🛋️🐾</div>
+    <div id="message" class="message">Перетаскивай Басика или пни мяч! 🛋️🐾</div>
 
     <div class="status-bar">
         <div class="label">🍖 Сытость: <span id="satiety-txt">100</span>%</div>
@@ -194,28 +194,31 @@
     const joyTxt = document.getElementById('joy-txt');
     const joyBar = document.getElementById('joy-bar');
 
-    // Физика мяча
-    let ballX = 30; let ballY = 200;
-    let vx = 0; let vy = 0;
-    const radius = 17; const friction = 0.98; const bounce = -0.75;
-    const roomWidth = 340; const roomHeight = 250;
+    // Размеры новой просторной комнаты
+    const roomWidth = 440; 
+    const roomHeight = 340;
 
-    // Координаты и состояние перетаскивания кота
-    let catX = 125; let catY = 70;
-    const catRadius = 45; 
+    // Настройки физики мяча
+    let ballX = 40; let ballY = 280;
+    let vx = 0; let vy = 0;
+    const radius = 19; const friction = 0.98; const bounce = -0.75;
+
+    // Настройки перетаскивания кота
+    let catX = 170; let catY = 110;
+    const catRadius = 50; 
     let isDragging = false;
     let startX, startY;
 
-    // --- ЛОГИКА DRAG-AND-DROP (Перетаскивание кота) ---
+    // Перетаскивание кота (Drag and Drop)
     catImg.addEventListener('mousedown', startDrag);
     catImg.addEventListener('touchstart', startDrag, { passive: false });
 
     function startDrag(e) {
         isDragging = true;
-        msgEl.innerText = 'Взлетаем! Басик весело летит по комнате ☁️';
+        msgEl.innerText = 'Басик летит по комнате! ☁️';
         
-        let clientX = e.clientX || e.touches[0].clientX;
-        let clientY = e.clientY || e.touches[0].clientY;
+        let clientX = e.clientX || e.touches.clientX;
+        let clientY = e.clientY || e.touches.clientY;
         
         startX = clientX - catX;
         startY = clientY - catY;
@@ -230,24 +233,21 @@
         if (!isDragging) return;
         if(e.cancelable) e.preventDefault();
 
-        let clientX = e.clientX || e.touches[0].clientX;
-        let clientY = e.clientY || e.touches[0].clientY;
+        let clientX = e.clientX || e.touches.clientX;
+        let clientY = e.clientY || e.touches.clientY;
 
-        // Рассчитываем новые координаты внутри игровой зоны
         let rect = room.getBoundingClientRect();
         let targetX = clientX - rect.left - startX;
         let targetY = clientY - rect.top - startY;
 
-        // Ограничиваем кота стенами комнаты
         catX = Math.max(0, Math.min(roomWidth - catRadius * 2, targetX));
         catY = Math.max(0, Math.min(roomHeight - catRadius * 2, targetY));
 
         catImg.style.left = catX + 'px';
         catImg.style.top = catY + 'px';
         
-        // Проверяем, не посадили ли мы кота на коврик
-        if (catY > 140 && catX > 60 && catX < 190) {
-            msgEl.innerText = 'Басику очень нравится сидеть на мягком коврике! 🐾';
+        if (catY > 200 && catX > 100 && catX < 240) {
+            msgEl.innerText = 'Басик уютно устроился на коврике! 🐾';
         }
     }
 
@@ -263,45 +263,45 @@
         }
     }
 
-    // --- ГЛАВНЫЙ ИГРОВОЙ ДВИЖОК ---
+    // Полноценный игровой цикл обновлений
     function updateGame() {
-        // Физика мяча
+        // Движение мяча
         ballX += vx; ballY += vy;
         vx *= friction; vy *= friction;
 
         if (Math.abs(vx) < 0.05) vx = 0;
         if (Math.abs(vy) < 0.05) vy = 0;
 
-        // Отскоки мяча от стен
+        // Отскоки от стен комнаты
         if (ballX < 0) { ballX = 0; vx *= bounce; }
         else if (ballX > roomWidth - radius * 2) { ballX = roomWidth - radius * 2; vx *= bounce; }
         if (ballY < 0) { ballY = 0; vy *= bounce; }
         else if (ballY > roomHeight - radius * 2) { ballY = roomHeight - radius * 2; vy *= bounce; }
 
-        // Расчет столкновения мяча с центром круга кота
+        // Расчет столкновения мяча с котом
         let ballCenterX = ballX + radius;
         let ballCenterY = ballY + radius;
-        let catCenterX = catX + catRadius;  
+        let catCenterX = catX + catRadius;
         let catCenterY = catY + catRadius;
-let dx = ballCenterX - catCenterX;
-let dy = ballCenterY - catCenterY;
-let distance = Math.sqrt(dx * dx + dy * dy);
-let minDistance = radius + catRadius;
-// Если произошло столкновение
-if (distance < minDistance) {
-let angle = Math.atan2(dy, dx);
-// Выталкиваем мяч
+
+        let dx = ballCenterX - catCenterX;
+        let dy = ballCenterY - catCenterY;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        let minDistance = radius + catRadius;
+
+        if (distance < minDistance) {
+            let angle = Math.atan2(dy, dx);
+
 ballX = catCenterX + Math.cos(angle) * minDistance - radius;
 ballY = catCenterY + Math.sin(angle) * minDistance - radius;
-// Расчет импульса отскока
 let speed = Math.sqrt(vx * vx + vy * vy) + 3;
 if(speed < 4) speed = 6;
 vx = Math.cos(angle) * speed;
 vy = Math.sin(angle) * speed;
-triggerCatJoy('Басик отбил мяч прямо на лету! ⚽⚡', 'scale(1.15)');
+triggerCatJoy('Басик круто отбил катящийся мяч! ⚽⚡', 'scale(1.15)');
 if (joy < 100) { joy = Math.min(100, joy + 15); updateUI(); }
 }
-// Рендер мяча
+// Рендеринг положения мяча
 ball.style.transform = translate(${ballX}px, ${ballY}px) rotate(${ballX * 2}deg);
 requestAnimationFrame(updateGame);
 }
@@ -311,20 +311,19 @@ ball.addEventListener('touchstart', (e) => { e.preventDefault(); kickBall(e); })
 function kickBall() {
 vx = (Math.random() - 0.5) * 22;
 vy = -(Math.random() * 12 + 10);
-msgEl.innerText = 'Мяч полетел рикошетом по комнате! 🚀';
+msgEl.innerText = 'Бабах! Мяч полетел по комнате рикошетом! 🚀';
 if (joy < 100) { joy = Math.min(100, joy + 5); updateUI(); }
 }
 function updateUI() {
 satTxt.innerText = satiety;
 satBar.style.width = satiety + '%';
-// Стильные инди-цвета для шкал (оттенки серого и черного)
 satBar.style.backgroundColor = satiety > 50 ? '#737373' : (satiety > 20 ? '#a3a3a3' : '#d4d4d4');
 joyTxt.innerText = joy;
 joyBar.style.width = joy + '%';
 joyBar.style.backgroundColor = joy > 50 ? '#262626' : (joy > 20 ? '#525252' : '#737373');
 if (satiety <= 0 && joy <= 0) {
 catImg.style.filter = 'blur(1px) contrast(0.6)';
-msgEl.innerText = 'Басик заскучал... Перетащи его обратно на коврик!';
+msgEl.innerText = 'Басик загрустил... Поиграй с ним в мяч!';
 } else {
 catImg.style.filter = 'none';
 }
@@ -332,19 +331,19 @@ catImg.style.filter = 'none';
 function feed() {
 if (satiety < 100) {
 satiety = Math.min(100, satiety + 20);
-triggerCatJoy('Хрум! Басик сытно обедает! 🐟', 'scale(1.1)');
+triggerCatJoy('Хрум! Басик сытно кушает рыбку! 🐟', 'scale(1.1)');
 updateUI();
 }
 }
 function pet() {
 if (joy < 100) {
 joy = Math.min(100, joy + 15);
-triggerCatJoy('Муррр! Басик жмурится от удовольствия! 👋', 'rotate(7deg)');
+triggerCatJoy('Муррр! Кот довольно жмурится! 👋', 'rotate(7deg)');
 updateUI();
 }
 }
 function triggerCatJoy(messageText, transformAnimation) {
-if (isDragging) return; // Не меняем спрайт во время полета
+if (isDragging) return;
 catImg.src = HAPPY_IMG;
 msgEl.innerText = messageText;
 catImg.style.transform = transformAnimation;
@@ -353,12 +352,11 @@ catImg.src = NORMAL_IMG;
 catImg.style.transform = 'none';
 }, 1200);
 }
-// Медленное падение шкал
 setInterval(() => {
 satiety = Math.max(0, satiety - 2);
 joy = Math.max(0, joy - 2);
 updateUI();
 }, 4000);
-// Поехали!
+// Запуск
 updateGame();
 updateUI();
