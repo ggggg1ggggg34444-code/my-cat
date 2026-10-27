@@ -281,4 +281,84 @@
         // Расчет столкновения мяча с центром круга кота
         let ballCenterX = ballX + radius;
         let ballCenterY = ballY + radius;
-        let catCenterX = catX + catRadius;
+        let catCenterX = catX + catRadius;  
+        let catCenterY = catY + catRadius;
+let dx = ballCenterX - catCenterX;
+let dy = ballCenterY - catCenterY;
+let distance = Math.sqrt(dx * dx + dy * dy);
+let minDistance = radius + catRadius;
+// Если произошло столкновение
+if (distance < minDistance) {
+let angle = Math.atan2(dy, dx);
+// Выталкиваем мяч
+ballX = catCenterX + Math.cos(angle) * minDistance - radius;
+ballY = catCenterY + Math.sin(angle) * minDistance - radius;
+// Расчет импульса отскока
+let speed = Math.sqrt(vx * vx + vy * vy) + 3;
+if(speed < 4) speed = 6;
+vx = Math.cos(angle) * speed;
+vy = Math.sin(angle) * speed;
+triggerCatJoy('Басик отбил мяч прямо на лету! ⚽⚡', 'scale(1.15)');
+if (joy < 100) { joy = Math.min(100, joy + 15); updateUI(); }
+}
+// Рендер мяча
+ball.style.transform = translate(${ballX}px, ${ballY}px) rotate(${ballX * 2}deg);
+requestAnimationFrame(updateGame);
+}
+// Пинок мяча
+ball.addEventListener('mousedown', kickBall);
+ball.addEventListener('touchstart', (e) => { e.preventDefault(); kickBall(e); });
+function kickBall() {
+vx = (Math.random() - 0.5) * 22;
+vy = -(Math.random() * 12 + 10);
+msgEl.innerText = 'Мяч полетел рикошетом по комнате! 🚀';
+if (joy < 100) { joy = Math.min(100, joy + 5); updateUI(); }
+}
+function updateUI() {
+satTxt.innerText = satiety;
+satBar.style.width = satiety + '%';
+// Стильные инди-цвета для шкал (оттенки серого и черного)
+satBar.style.backgroundColor = satiety > 50 ? '#737373' : (satiety > 20 ? '#a3a3a3' : '#d4d4d4');
+joyTxt.innerText = joy;
+joyBar.style.width = joy + '%';
+joyBar.style.backgroundColor = joy > 50 ? '#262626' : (joy > 20 ? '#525252' : '#737373');
+if (satiety <= 0 && joy <= 0) {
+catImg.style.filter = 'blur(1px) contrast(0.6)';
+msgEl.innerText = 'Басик заскучал... Перетащи его обратно на коврик!';
+} else {
+catImg.style.filter = 'none';
+}
+}
+function feed() {
+if (satiety < 100) {
+satiety = Math.min(100, satiety + 20);
+triggerCatJoy('Хрум! Басик сытно обедает! 🐟', 'scale(1.1)');
+updateUI();
+}
+}
+function pet() {
+if (joy < 100) {
+joy = Math.min(100, joy + 15);
+triggerCatJoy('Муррр! Басик жмурится от удовольствия! 👋', 'rotate(7deg)');
+updateUI();
+}
+}
+function triggerCatJoy(messageText, transformAnimation) {
+if (isDragging) return; // Не меняем спрайт во время полета
+catImg.src = HAPPY_IMG;
+msgEl.innerText = messageText;
+catImg.style.transform = transformAnimation;
+setTimeout(() => {
+catImg.src = NORMAL_IMG;
+catImg.style.transform = 'none';
+}, 1200);
+}
+// Медленное падение шкал
+setInterval(() => {
+satiety = Math.max(0, satiety - 2);
+joy = Math.max(0, joy - 2);
+updateUI();
+}, 4000);
+// Поехали!
+updateGame();
+updateUI();
