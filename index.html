@@ -6,61 +6,106 @@
     <title>Мой Виртуальный Басик 🐾</title>
     <style>
         body {
-            background-color: #fce4ec;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
         }
-        .game-card {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        /* Игровая комната с диваном на фоне */
+        .game-room {
+            background: #fff;
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
             text-align: center;
-            width: 300px;
+            width: 340px;
         }
-        h1 { color: #d81b60; margin-bottom: 20px; font-size: 24px; }
-        .cat-avatar { font-size: 70px; margin: 20px 0; transition: transform 0.2s; }
-        .cat-avatar:active { transform: scale(1.1); }
-        .status-bar { margin: 15px 0; text-align: left; }
-        .label { font-weight: bold; color: #555; font-size: 14px; margin-bottom: 5px; }
-        .progress-bg { background: #e0e0e0; border-radius: 10px; height: 16px; overflow: hidden; }
+        h1 { color: #2c3e50; font-size: 22px; margin-top: 0; }
+        
+        /* Локация: Диван, на котором сидит кот */
+        .sofa-zone {
+            background: #e2e8f0; /* Имитация уютного дивана/комнаты */
+            border: 4px solid #cbd5e1;
+            border-radius: 16px;
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        /* Фото вашего кота */
+        .cat-photo {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+        /* Игрушка - Мячик */
+        .toy-ball {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .toy-ball:hover { transform: scale(1.2) rotate(15deg); }
+        
+        /* Шкалы состояния */
+        .status-bar { margin: 12px 0; text-align: left; }
+        .label { font-weight: bold; color: #4a5568; font-size: 13px; margin-bottom: 4px; }
+        .progress-bg { background: #edf2f7; border-radius: 10px; height: 14px; overflow: hidden; }
         .progress-fill { height: 100%; width: 100%; transition: width 0.3s ease, background-color 0.3s; }
-        .btn-container { display: flex; justify-content: space-around; margin-top: 25px; gap: 10px; }
+        
+        /* Кнопки ухода */
+        .btn-container { display: flex; justify-content: space-around; margin-top: 20px; gap: 10px; }
         button {
-            background: #d81b60; color: white; border: none; padding: 10px 15px;
-            border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 14px;
+            background: #3182ce; color: white; border: none; padding: 12px 10px;
+            border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 13px;
             flex: 1; transition: background 0.2s, transform 0.1s;
         }
-        button:hover { background: #c2185b; }
+        button:hover { background: #2b6cb0; }
         button:active { transform: scale(0.95); }
-        .message { font-style: italic; color: #777; min-height: 20px; margin-top: 15px; font-size: 14px; }
+        
+        .message { font-style: italic; color: #718096; min-height: 38px; margin-top: 15px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-<div class="game-card">
+<div class="game-room">
     <h1>Виртуальный Басик 🐾</h1>
     
-    <div id="cat" class="cat-avatar">😸</div>
-    <div id="message" class="message">Басик сыт и счастлив! ✨</div>
+    <!-- Зона дивана с котиком и мячом -->
+    <div class="sofa-zone">
+        <!-- Вставьте прямую ссылку на фото кота вместо текста ниже -->
+        <img id="catImg" class="cat-photo" src="ССЫЛКА_НА_ФОТО_ВАШЕГО_КОТА" alt="Мой Кот">
+        <!-- Интерактивный мячик -->
+        <div id="ball" class="toy-ball" onclick="playWithBall()">⚽</div>
+    </div>
+    
+    <div id="message" class="message">Басик уютно устроился на диване! 🛋️</div>
 
     <div class="status-bar">
         <div class="label">🍖 Сытость: <span id="satiety-txt">100</span>%</div>
-        <div class="progress-bg"><div id="satiety-bar" class="progress-fill" style="background-color: #4caf50;"></div></div>
+        <div class="progress-bg"><div id="satiety-bar" class="progress-fill" style="background-color: #48bb78;"></div></div>
     </div>
 
     <div class="status-bar">
-        <div class="label">🎉 Радость: <span id="joy-txt">100</span>%</div>
-        <div class="progress-bg"><div id="joy-bar" class="progress-fill" style="background-color: #2196f3;"></div></div>
+        <div class="label">🎉 Настроение: <span id="joy-txt">100</span>%</div>
+        <div class="progress-bg"><div id="joy-bar" class="progress-fill" style="background-color: #4299e1;"></div></div>
     </div>
 
     <div class="btn-container">
         <button onclick="feed()">Покормить 🐟</button>
-        <button onclick="play()">Погладить 👋</button>
+        <button onclick="pet()">Погладить на диване 🛋️</button>
     </div>
 </div>
 
@@ -68,55 +113,81 @@
     let satiety = 100;
     let joy = 100;
 
-    const catEl = document.getElementById('cat');
+    const catImg = document.getElementById('catImg');
     const msgEl = document.getElementById('message');
     const satTxt = document.getElementById('satiety-txt');
     const satBar = document.getElementById('satiety-bar');
     const joyTxt = document.getElementById('joy-txt');
     const joyBar = document.getElementById('joy-bar');
+    const ballEl = document.getElementById('ball');
 
     function updateUI() {
         satTxt.innerText = satiety;
         satBar.style.width = satiety + '%';
-        satBar.style.backgroundColor = satiety > 50 ? '#4caf50' : (satiety > 20 ? '#ff9800' : '#f44336');
+        satBar.style.backgroundColor = satiety > 50 ? '#48bb78' : (satiety > 20 ? '#ed8936' : '#f56565');
 
         joyTxt.innerText = joy;
         joyBar.style.width = joy + '%';
-        joyBar.style.backgroundColor = joy > 50 ? '#2196f3' : (joy > 20 ? '#ff9800' : '#f44336');
+        joyBar.style.backgroundColor = joy > 50 ? '#4299e1' : (joy > 20 ? '#ed8936' : '#f56565');
 
+        // Эффекты фильтров в зависимости от настроения кота
         if (satiety <= 0 && joy <= 0) {
-            catEl.innerText = '😿';
-            msgEl.innerText = 'Басик обиделся и загрустил... Требуется срочная забота!';
+            catImg.style.filter = 'grayscale(1) contrast(0.8)'; // Кот погрустнел (стал черно-белым)
+            msgEl.innerText = 'Басик голодает и скучает на диване... Покорми его!';
         } else if (satiety < 30 || joy < 30) {
-            catEl.innerText = '😾';
-            msgEl.innerText = 'Мяу! Мне некомфортно!';
+            catImg.style.filter = 'sepia(0.5)';
+            msgEl.innerText = 'Мяу! Басику не нравится быть заброшенным.';
         } else {
-            catEl.innerText = '😸';
+            catImg.style.filter = 'none'; // Всё отлично
         }
     }
 
     function feed() {
         if (satiety < 100) {
-            satiety = Math.min(100, satiety + 15);
-            msgEl.innerText = 'Хрум-хрум! Очень вкусная рыбка! 🐟';
+            satiety = Math.min(100, satiety + 20);
+            msgEl.innerText = 'Мур! Кот кушает рыбку прямо на диване! 🐟';
+            animateCat('scale(1.1)');
             updateUI();
         }
     }
 
-    function play() {
+    function pet() {
         if (joy < 100) {
             joy = Math.min(100, joy + 15);
-            msgEl.innerText = 'Муррр! Басику нравятся поглаживания! 👋';
+            msgEl.innerText = 'Кот довольно мурчит от поглаживаний под ушком! 👋';
+            animateCat('rotate(5deg)');
             updateUI();
         }
     }
 
-    // Каждые 3 секунды показатели падают на 5%
+    function playWithBall() {
+        if (joy < 100) {
+            joy = Math.min(100, joy + 25);
+            msgEl.innerText = 'Ты пнул мячик! Кот весело прыгает по дивану! ⚽🐾';
+            
+            // Анимация прыжка кота и покачивания мяча
+            ballEl.style.transform = 'translateX(-20px) rotate(-360deg)';
+            animateCat('translateY(-20px)');
+            
+            setTimeout(() => {
+                ballEl.style.transform = 'none';
+            }, 500);
+            
+            updateUI();
+        }
+    }
+
+    function animateCat(transformStyle) {
+        catImg.style.transform = transformStyle;
+        setTimeout(() => { catImg.style.transform = 'none'; }, 300);
+    }
+
+    // Показатели падают каждые 4 секунды
     setInterval(() => {
-        satiety = Math.max(0, satiety - 5);
-        joy = Math.max(0, joy - 5);
+        satiety = Math.max(0, satiety - 4);
+        joy = Math.max(0, joy - 4);
         updateUI();
-    }, 3000);
+    }, 4000);
 
     updateUI();
 </script>
