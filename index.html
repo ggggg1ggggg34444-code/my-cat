@@ -13,6 +13,8 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
+            user-select: none;
         }
         .game-room {
             background: #fff;
@@ -24,36 +26,43 @@
         }
         h1 { color: #2c3e50; font-size: 22px; margin-top: 0; }
         
+        /* Физический контейнер комнаты */
         .sofa-zone {
             background: #e2e8f0; 
             border: 4px solid #cbd5e1;
             border-radius: 16px;
-            height: 220px;
+            height: 240px;
             position: relative;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             margin-bottom: 15px;
         }
+        
+        /* Кот закреплен по центру */
         .cat-photo {
-            width: 160px;
-            height: 160px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             object-fit: cover;
             border: 5px solid white;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            position: absolute;
+            top: 50px;
+            left: 100px;
             transition: transform 0.2s ease, filter 0.3s;
+            pointer-events: none; /* Чтобы кот не мешал кликать по мячу */
         }
+        
+        /* Физический мяч */
         .toy-ball {
             position: absolute;
-            bottom: 15px;
-            right: 20px;
-            font-size: 30px;
+            width: 36px;
+            height: 36px;
+            font-size: 32px;
+            line-height: 36px;
+            text-align: center;
             cursor: pointer;
-            transition: transform 0.2s;
+            will-change: transform;
         }
-        .toy-ball:hover { transform: scale(1.2) rotate(15deg); }
         
         .status-bar { margin: 12px 0; text-align: left; }
         .label { font-weight: bold; color: #4a5568; font-size: 13px; margin-bottom: 4px; }
@@ -77,13 +86,14 @@
 <div class="game-room">
     <h1>Виртуальный Басик 🐾</h1>
     
-    <div class="sofa-zone">
-        <!-- Главное фото кота по умолчанию -->
+    <div class="sofa-zone" id="room">
+        <!-- Фото кота (имена твоих файлов сохранены) -->
         <img id="catImg" class="cat-photo" src="MVIMG_20261008_193929.jpg" alt="Мой Кот">
-        <div id="ball" class="toy-ball" onclick="playWithBall()">⚽</div>
+        <!-- Мяч с физикой -->
+        <div id="ball" class="toy-ball">⚽</div>
     </div>
     
-    <div id="message" class="message">Басик уютно устроился на диване! 🛋️</div>
+    <div id="message" class="message">Пни мячик, чтобы поиграть с Басиком! ⚽</div>
 
     <div class="status-bar">
         <div class="label">🍖 Сытость: <span id="satiety-txt">100</span>%</div>
@@ -97,7 +107,7 @@
 
     <div class="btn-container">
         <button onclick="feed()">Покормить 🐟</button>
-        <button onclick="pet()">Погладить на диване 🛋️</button>
+        <button onclick="pet()">Погладить кота 🛋️</button>
     </div>
 </div>
 
@@ -105,17 +115,123 @@
     let satiety = 100;
     let joy = 100;
 
-    // Названия файлов картинок
     const NORMAL_IMG = "MVIMG_20261008_193929.jpg";
     const HAPPY_IMG = "MVIMG_20261008_193930.jpg";
 
+    const room = document.getElementById('room');
+    const ball = document.getElementById('ball');
     const catImg = document.getElementById('catImg');
     const msgEl = document.getElementById('message');
     const satTxt = document.getElementById('satiety-txt');
     const satBar = document.getElementById('satiety-bar');
     const joyTxt = document.getElementById('joy-txt');
     const joyBar = document.getElementById('joy-bar');
-    const ballEl = document.getElementById('ball');
+
+    // Переменные физического движка
+    let ballX = 20;        // Позиция X
+    let ballY = 180;       // Позиция Y
+    let vx = 0;            // Скорость по X
+    let vy = 0;            // Скорость по Y
+    const radius = 18;     // Радиус мяча (36px / 2)
+    const friction = 0.98; // Трение (чтобы мяч плавно останавливался)
+    const bounce = -0.75;  // Сила отскока от стен (минус меняет направление)
+
+    // Размеры игровой зоны
+    const roomWidth = 340; 
+    const roomHeight = 240;
+
+    // Позиция хитбокса кота для столкновений
+    const cat = { x: 100 + 65, y: 50 + 65, r: 65 }; 
+
+    // Главный цикл физики (работает на requestAnimationFrame для идеальной плавности)
+    function updatePhysics() {
+        // Применяем скорость к координатам
+        ballX += vx;
+        ballY += vy;
+
+        // Гасим скорость трением
+        vx *= friction;
+        vy *= friction;
+
+        // Если скорость совсем крошечная - обнуляем
+        if (Math.abs(vx) < 0.05) vx = 0;
+        if (Math.abs(vy) < 0.05) vy = 0;
+
+        // Отскок от левой и правой стены
+        if (ballX < 0) {
+            ballX = 0;
+            vx *= bounce;
+        } else if (ballX > roomWidth - radius * 2) {
+            ballX = roomWidth - radius * 2;
+            vx *= bounce;
+        }
+
+        // Отскок от потолка и пола
+        if (ballY < 0) {
+            ballY = 0;
+            vy *= bounce;
+        } else if (ballY > roomHeight - radius * 2) {
+            ballY = roomHeight - radius * 2;
+            vy *= bounce;
+        }
+
+        // --- Физика столкновения мяча с Котом ---
+        let ballCenterX = ballX + radius;
+        let ballCenterY = ballY + radius;
+        
+        let dx = ballCenterX - cat.x;
+        let dy = ballCenterY - cat.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        let minDistance = radius + cat.r;
+
+        if (distance < minDistance) {
+            // Кот отбивает мяч! Находим угол столкновения
+            let angle = Math.atan2(dy, dx);
+            
+            // Выталкиваем мяч за пределы кота, чтобы он не застрял
+            ballX = cat.x + Math.cos(angle) * minDistance - radius;
+            ballY = cat.y + Math.sin(angle) * minDistance - radius;
+
+            // Меняем вектор скорости (отскок от круга)
+            let speed = Math.sqrt(vx * vx + vy * vy) + 2; // Немного ускоряем от удара
+            if(speed < 3) speed = 5; // Если мяч еле катился, кот дает ему пинок
+            
+            vx = Math.cos(angle) * speed;
+            vy = Math.sin(angle) * speed;
+
+            // Кот радуется игре!
+            triggerCatJoy('Басик поймал мяч лапами и отбил его обратно! ⚽🐾', 'translateY(-15px)');
+            if (joy < 100) {
+                joy = Math.min(100, joy + 15);
+                updateUI();
+            }
+        }
+
+        // Отрисовка позиции мяча на экране
+        ball.style.transform = `translate(${ballX}px, ${ballY}px) rotate(${ballX * 2}deg)`;
+
+        requestAnimationFrame(updatePhysics);
+    }
+
+    // Пинок мяча по клику / тапу
+    ball.addEventListener('mousedown', kickBall);
+    ball.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        kickBall(e);
+    });
+
+    function kickBall(e) {
+        // Случайный сильный импульс вверх и вбок
+        vx = (Math.random() - 0.5) * 20; 
+        vy = -(Math.random() * 12 + 10); // Летит вверх
+
+        msgEl.innerText = 'Ты круто запустил мяч! Ищи отскок! 🚀';
+        
+        if (joy < 100) {
+            joy = Math.min(100, joy + 5);
+            updateUI();
+        }
+    }
 
     function updateUI() {
         satTxt.innerText = satiety;
@@ -126,32 +242,29 @@
         joyBar.style.width = joy + '%';
         joyBar.style.backgroundColor = joy > 50 ? '#4299e1' : (joy > 20 ? '#ed8936' : '#f56565');
 
-        // Если кот заброшен, он блекнет
         if (satiety <= 0 && joy <= 0) {
             catImg.style.filter = 'grayscale(1) contrast(0.8)';
-            msgEl.innerText = 'Басик проголодался и скучает... Позаботься о нем!';
+            msgEl.innerText = 'Басик заскучал без игр... Нажми на мяч!';
         } else {
             catImg.style.filter = 'none';
         }
     }
 
-    // Функция смены эмоции на радостную при действии
-    function triggerHappyState(messageText, transformAnimation) {
-        catImg.src = HAPPY_IMG; // Включаем вторую фотку
+    function triggerCatJoy(messageText, transformAnimation) {
+        catImg.src = HAPPY_IMG;
         msgEl.innerText = messageText;
         catImg.style.transform = transformAnimation;
 
-        // Через 1.5 секунды возвращаем обычную фотку
         setTimeout(() => {
             catImg.src = NORMAL_IMG;
             catImg.style.transform = 'none';
-        }, 1500);
+        }, 1200);
     }
 
     function feed() {
         if (satiety < 100) {
             satiety = Math.min(100, satiety + 20);
-            triggerHappyState('Хрум! Басик с удовольствием лопает рыбку! 🐟', 'scale(1.1)');
+            triggerCatJoy('Хрум! Басик с удовольствием лопает рыбку! 🐟', 'scale(1.1)');
             updateUI();
         }
     }
@@ -159,30 +272,20 @@
     function pet() {
         if (joy < 100) {
             joy = Math.min(100, joy + 15);
-            triggerHappyState('Муррр! Басик зажмурился от удовольствия! 👋', 'rotate(5deg)');
+            triggerCatJoy('Муррр! Басик довольно жмурится! 👋', 'rotate(5deg)');
             updateUI();
         }
     }
 
-    function playWithBall() {
-        if (joy < 100) {
-            joy = Math.min(100, joy + 25);
-            
-            ballEl.style.transform = 'translateX(-30px) rotate(-360deg)';
-            triggerHappyState('Мяч летит! Басик поймал его лапами! ⚽🐾', 'translateY(-20px)');
-            
-            setTimeout(() => { ballEl.style.transform = 'none'; }, 500);
-            updateUI();
-        }
-    }
-
-    // Убывание шкал
+    // Постепенное падение показателей
     setInterval(() => {
-        satiety = Math.max(0, satiety - 4);
-        joy = Math.max(0, joy - 4);
+        satiety = Math.max(0, satiety - 3);
+        joy = Math.max(0, joy - 3);
         updateUI();
     }, 4000);
 
+    // Запуск физического движка
+    updatePhysics();
     updateUI();
 </script>
 
