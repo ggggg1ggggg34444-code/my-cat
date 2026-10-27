@@ -6,7 +6,7 @@
     <title>Мой Виртуальный Басик 🐾</title>
     <style>
         body {
-            background-color: #f0f4f8;
+            background-color: #e5e5e5;
             font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
@@ -17,68 +17,124 @@
             user-select: none;
         }
         .game-room {
-            background: #fff;
+            background: #ffffff;
             padding: 25px;
             border-radius: 24px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.15);
             text-align: center;
             width: 340px;
         }
-        h1 { color: #2c3e50; font-size: 22px; margin-top: 0; }
+        h1 { color: #1a1a1a; font-size: 22px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* Физический контейнер комнаты */
+        /* 2D-Интерьер в стиле инди-игры (Черно-бело-серый) */
         .sofa-zone {
-            background: #e2e8f0; 
-            border: 4px solid #cbd5e1;
+            background-color: #f0f0f0; 
+            border: 4px solid #1a1a1a;
             border-radius: 16px;
-            height: 240px;
+            height: 250px;
             position: relative;
             overflow: hidden;
             margin-bottom: 15px;
         }
         
-        /* Кот закреплен по центру */
-        .cat-photo {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        /* Минималистичное 2D окно на стене */
+        .indie-window {
             position: absolute;
-            top: 50px;
-            left: 100px;
-            transition: transform 0.2s ease, filter 0.3s;
-            pointer-events: none; /* Чтобы кот не мешал кликать по мячу */
+            top: 20px;
+            left: 30px;
+            width: 60px;
+            height: 70px;
+            border: 3px solid #1a1a1a;
+            background: #ffffff;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .window-pane {
+            width: 27px;
+            height: 32px;
+            border: 1px solid #1a1a1a;
+        }
+
+        /* Простой схематичный серый диванчик по центру */
+        .indie-sofa {
+            position: absolute;
+            bottom: 45px;
+            left: 75px;
+            width: 190px;
+            height: 75px;
+            background: #cccccc;
+            border: 4px solid #1a1a1a;
+            border-radius: 12px 12px 4px 4px;
+        }
+        .sofa-back {
+            position: absolute;
+            top: -30px;
+            left: 10px;
+            width: 162px;
+            height: 35px;
+            background: #b3b3b3;
+            border: 4px solid #1a1a1a;
+            border-radius: 8px 8px 0 0;
+        }
+
+        /* Узорчатый коврик на полу */
+        .indie-rug {
+            position: absolute;
+            bottom: 10px;
+            left: 95px;
+            width: 150px;
+            height: 25px;
+            background: #e0e0e0;
+            border: 3px solid #1a1a1a;
+            border-radius: 50%;
+            /* Схематичный узор в полоску */
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 10px, #1a1a1a 10px, #1a1a1a 12px);
         }
         
-        /* Физический мяч */
+        /* Интерактивное перетаскиваемое фото кота */
+        .cat-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #1a1a1a;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            position: absolute;
+            cursor: grab;
+            z-index: 10;
+            touch-action: none; /* Предотвращает лаги скролла на смартфонах */
+        }
+        .cat-photo:active { cursor: grabbing; }
+        
+        /* Мяч с физикой */
         .toy-ball {
             position: absolute;
-            width: 36px;
-            height: 36px;
-            font-size: 32px;
-            line-height: 36px;
+            width: 34px;
+            height: 34px;
+            font-size: 30px;
+            line-height: 34px;
             text-align: center;
             cursor: pointer;
+            z-index: 5;
             will-change: transform;
         }
         
+        /* Шкалы интерфейса */
         .status-bar { margin: 12px 0; text-align: left; }
-        .label { font-weight: bold; color: #4a5568; font-size: 13px; margin-bottom: 4px; }
-        .progress-bg { background: #edf2f7; border-radius: 10px; height: 14px; overflow: hidden; }
+        .label { font-weight: bold; color: #1a1a1a; font-size: 13px; margin-bottom: 4px; }
+        .progress-bg { background: #e0e0e0; border: 2px solid #1a1a1a; border-radius: 6px; height: 14px; overflow: hidden; }
         .progress-fill { height: 100%; width: 100%; transition: width 0.3s ease, background-color 0.3s; }
         
         .btn-container { display: flex; justify-content: space-around; margin-top: 20px; gap: 10px; }
         button {
-            background: #3182ce; color: white; border: none; padding: 12px 10px;
+            background: #ffffff; color: #1a1a1a; border: 3px solid #1a1a1a; padding: 12px 10px;
             border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 13px;
             flex: 1; transition: background 0.2s, transform 0.1s;
         }
-        button:hover { background: #2b6cb0; }
+        button:hover { background: #1a1a1a; color: #ffffff; }
         button:active { transform: scale(0.95); }
         
-        .message { font-style: italic; color: #718096; min-height: 38px; margin-top: 15px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+        .message { font-style: italic; color: #404040; min-height: 38px; margin-top: 15px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -87,27 +143,38 @@
     <h1>Виртуальный Басик 🐾</h1>
     
     <div class="sofa-zone" id="room">
-        <!-- Фото кота (имена твоих файлов сохранены) -->
-        <img id="catImg" class="cat-photo" src="MVIMG_20261008_193929.jpg" alt="Мой Кот">
-        <!-- Мяч с физикой -->
+        <!-- 2D Векторные элементы комнаты -->
+        <div class="indie-window">
+            <div class="window-pane"></div><div class="window-pane"></div>
+            <div class="window-pane"></div><div class="window-pane"></div>
+        </div>
+        <div class="indie-sofa">
+            <div class="sofa-back"></div>
+        </div>
+        <div class="indie-rug"></div>
+
+        <!-- Кот (Перетаскиваемый) -->
+        <img id="catImg" class="cat-photo" src="MVIMG_20261008_193929.jpg" alt="Мой Кот" style="left: 125px; top: 70px;">
+        
+        <!-- Мяч -->
         <div id="ball" class="toy-ball">⚽</div>
     </div>
     
-    <div id="message" class="message">Пни мячик, чтобы поиграть с Басиком! ⚽</div>
+    <div id="message" class="message">Перетаскивай Басика за шкирку или пни мяч! 🛋️🐾</div>
 
     <div class="status-bar">
         <div class="label">🍖 Сытость: <span id="satiety-txt">100</span>%</div>
-        <div class="progress-bg"><div id="satiety-bar" class="progress-fill" style="background-color: #48bb78;"></div></div>
+        <div class="progress-bg"><div id="satiety-bar" class="progress-fill" style="background-color: #808080;"></div></div>
     </div>
 
     <div class="status-bar">
         <div class="label">🎉 Настроение: <span id="joy-txt">100</span>%</div>
-        <div class="progress-bg"><div id="joy-bar" class="progress-fill" style="background-color: #4299e1;"></div></div>
+        <div class="progress-bg"><div id="joy-bar" class="progress-fill" style="background-color: #404040;"></div></div>
     </div>
 
     <div class="btn-container">
         <button onclick="feed()">Покормить 🐟</button>
-        <button onclick="pet()">Погладить кота 🛋️</button>
+        <button onclick="pet()">Погладить 👋</button>
     </div>
 </div>
 
@@ -127,105 +194,68 @@
     const joyTxt = document.getElementById('joy-txt');
     const joyBar = document.getElementById('joy-bar');
 
-    // Переменные физического движка
-    let ballX = 20;        // Позиция X
-    let ballY = 180;       // Позиция Y
-    let vx = 0;            // Скорость по X
-    let vy = 0;            // Скорость по Y
-    const radius = 18;     // Радиус мяча (36px / 2)
-    const friction = 0.98; // Трение (чтобы мяч плавно останавливался)
-    const bounce = -0.75;  // Сила отскока от стен (минус меняет направление)
+    // Физика мяча
+    let ballX = 30; let ballY = 200;
+    let vx = 0; let vy = 0;
+    const radius = 17; const friction = 0.98; const bounce = -0.75;
+    const roomWidth = 340; const roomHeight = 250;
 
-    // Размеры игровой зоны
-    const roomWidth = 340; 
-    const roomHeight = 240;
+    // Координаты и состояние перетаскивания кота
+    let catX = 125; let catY = 70;
+    const catRadius = 45; 
+    let isDragging = false;
+    let startX, startY;
 
-    // Позиция хитбокса кота для столкновений
-    const cat = { x: 100 + 65, y: 50 + 65, r: 65 }; 
+    // --- ЛОГИКА DRAG-AND-DROP (Перетаскивание кота) ---
+    catImg.addEventListener('mousedown', startDrag);
+    catImg.addEventListener('touchstart', startDrag, { passive: false });
 
-    // Главный цикл физики (работает на requestAnimationFrame для идеальной плавности)
-    function updatePhysics() {
-        // Применяем скорость к координатам
-        ballX += vx;
-        ballY += vy;
-
-        // Гасим скорость трением
-        vx *= friction;
-        vy *= friction;
-
-        // Если скорость совсем крошечная - обнуляем
-        if (Math.abs(vx) < 0.05) vx = 0;
-        if (Math.abs(vy) < 0.05) vy = 0;
-
-        // Отскок от левой и правой стены
-        if (ballX < 0) {
-            ballX = 0;
-            vx *= bounce;
-        } else if (ballX > roomWidth - radius * 2) {
-            ballX = roomWidth - radius * 2;
-            vx *= bounce;
-        }
-
-        // Отскок от потолка и пола
-        if (ballY < 0) {
-            ballY = 0;
-            vy *= bounce;
-        } else if (ballY > roomHeight - radius * 2) {
-            ballY = roomHeight - radius * 2;
-            vy *= bounce;
-        }
-
-        // --- Физика столкновения мяча с Котом ---
-        let ballCenterX = ballX + radius;
-        let ballCenterY = ballY + radius;
+    function startDrag(e) {
+        isDragging = true;
+        msgEl.innerText = 'Взлетаем! Басик весело летит по комнате ☁️';
         
-        let dx = ballCenterX - cat.x;
-        let dy = ballCenterY - cat.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        let minDistance = radius + cat.r;
-
-        if (distance < minDistance) {
-            // Кот отбивает мяч! Находим угол столкновения
-            let angle = Math.atan2(dy, dx);
-            
-            // Выталкиваем мяч за пределы кота, чтобы он не застрял
-            ballX = cat.x + Math.cos(angle) * minDistance - radius;
-            ballY = cat.y + Math.sin(angle) * minDistance - radius;
-
-            // Меняем вектор скорости (отскок от круга)
-            let speed = Math.sqrt(vx * vx + vy * vy) + 2; // Немного ускоряем от удара
-            if(speed < 3) speed = 5; // Если мяч еле катился, кот дает ему пинок
-            
-            vx = Math.cos(angle) * speed;
-            vy = Math.sin(angle) * speed;
-
-            // Кот радуется игре!
-            triggerCatJoy('Басик поймал мяч лапами и отбил его обратно! ⚽🐾', 'translateY(-15px)');
-            if (joy < 100) {
-                joy = Math.min(100, joy + 15);
-                updateUI();
-            }
-        }
-
-        // Отрисовка позиции мяча на экране
-        ball.style.transform = `translate(${ballX}px, ${ballY}px) rotate(${ballX * 2}deg)`;
-
-        requestAnimationFrame(updatePhysics);
+        let clientX = e.clientX || e.touches[0].clientX;
+        let clientY = e.clientY || e.touches[0].clientY;
+        
+        startX = clientX - catX;
+        startY = clientY - catY;
+        
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchend', stopDrag);
     }
 
-    // Пинок мяча по клику / тапу
-    ball.addEventListener('mousedown', kickBall);
-    ball.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        kickBall(e);
-    });
+    function drag(e) {
+        if (!isDragging) return;
+        if(e.cancelable) e.preventDefault();
 
-    function kickBall(e) {
-        // Случайный сильный импульс вверх и вбок
-        vx = (Math.random() - 0.5) * 20; 
-        vy = -(Math.random() * 12 + 10); // Летит вверх
+        let clientX = e.clientX || e.touches[0].clientX;
+        let clientY = e.clientY || e.touches[0].clientY;
 
-        msgEl.innerText = 'Ты круто запустил мяч! Ищи отскок! 🚀';
+        // Рассчитываем новые координаты внутри игровой зоны
+        let rect = room.getBoundingClientRect();
+        let targetX = clientX - rect.left - startX;
+        let targetY = clientY - rect.top - startY;
+
+        // Ограничиваем кота стенами комнаты
+        catX = Math.max(0, Math.min(roomWidth - catRadius * 2, targetX));
+        catY = Math.max(0, Math.min(roomHeight - catRadius * 2, targetY));
+
+        catImg.style.left = catX + 'px';
+        catImg.style.top = catY + 'px';
+        
+        // Проверяем, не посадили ли мы кота на коврик
+        if (catY > 140 && catX > 60 && catX < 190) {
+            msgEl.innerText = 'Басику очень нравится сидеть на мягком коврике! 🐾';
+        }
+    }
+
+    function stopDrag() {
+        if (!isDragging) return;
+        isDragging = false;
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('touchmove', drag);
         
         if (joy < 100) {
             joy = Math.min(100, joy + 5);
@@ -233,61 +263,22 @@
         }
     }
 
-    function updateUI() {
-        satTxt.innerText = satiety;
-        satBar.style.width = satiety + '%';
-        satBar.style.backgroundColor = satiety > 50 ? '#48bb78' : (satiety > 20 ? '#ed8936' : '#f56565');
+    // --- ГЛАВНЫЙ ИГРОВОЙ ДВИЖОК ---
+    function updateGame() {
+        // Физика мяча
+        ballX += vx; ballY += vy;
+        vx *= friction; vy *= friction;
 
-        joyTxt.innerText = joy;
-        joyBar.style.width = joy + '%';
-        joyBar.style.backgroundColor = joy > 50 ? '#4299e1' : (joy > 20 ? '#ed8936' : '#f56565');
+        if (Math.abs(vx) < 0.05) vx = 0;
+        if (Math.abs(vy) < 0.05) vy = 0;
 
-        if (satiety <= 0 && joy <= 0) {
-            catImg.style.filter = 'grayscale(1) contrast(0.8)';
-            msgEl.innerText = 'Басик заскучал без игр... Нажми на мяч!';
-        } else {
-            catImg.style.filter = 'none';
-        }
-    }
+        // Отскоки мяча от стен
+        if (ballX < 0) { ballX = 0; vx *= bounce; }
+        else if (ballX > roomWidth - radius * 2) { ballX = roomWidth - radius * 2; vx *= bounce; }
+        if (ballY < 0) { ballY = 0; vy *= bounce; }
+        else if (ballY > roomHeight - radius * 2) { ballY = roomHeight - radius * 2; vy *= bounce; }
 
-    function triggerCatJoy(messageText, transformAnimation) {
-        catImg.src = HAPPY_IMG;
-        msgEl.innerText = messageText;
-        catImg.style.transform = transformAnimation;
-
-        setTimeout(() => {
-            catImg.src = NORMAL_IMG;
-            catImg.style.transform = 'none';
-        }, 1200);
-    }
-
-    function feed() {
-        if (satiety < 100) {
-            satiety = Math.min(100, satiety + 20);
-            triggerCatJoy('Хрум! Басик с удовольствием лопает рыбку! 🐟', 'scale(1.1)');
-            updateUI();
-        }
-    }
-
-    function pet() {
-        if (joy < 100) {
-            joy = Math.min(100, joy + 15);
-            triggerCatJoy('Муррр! Басик довольно жмурится! 👋', 'rotate(5deg)');
-            updateUI();
-        }
-    }
-
-    // Постепенное падение показателей
-    setInterval(() => {
-        satiety = Math.max(0, satiety - 3);
-        joy = Math.max(0, joy - 3);
-        updateUI();
-    }, 4000);
-
-    // Запуск физического движка
-    updatePhysics();
-    updateUI();
-</script>
-
-</body>
-</html>
+        // Расчет столкновения мяча с центром круга кота
+        let ballCenterX = ballX + radius;
+        let ballCenterY = ballY + radius;
+        let catCenterX = catX + catRadius;
