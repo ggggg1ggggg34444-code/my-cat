@@ -22,24 +22,21 @@
             border-radius: 24px;
             box-shadow: 0 12px 32px rgba(0,0,0,0.15);
             text-align: center;
-            /* Увеличили общую ширину карточки игры */
             width: 440px; 
         }
         h1 { color: #1a1a1a; font-size: 22px; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* Большая игровая зона */
         .sofa-zone {
             background-color: #f0f0f0; 
             border: 4px solid #1a1a1a;
             border-radius: 16px;
             width: 440px;
-            height: 340px; /* Увеличили высоту комнаты */
+            height: 340px; 
             position: relative;
             overflow: hidden;
             margin-bottom: 15px;
         }
         
-        /* 2D окно на стене */
         .indie-window {
             position: absolute;
             top: 25px;
@@ -57,7 +54,6 @@
             border: 1px solid #1a1a1a;
         }
 
-        /* Серый диванчик по центру увеличенной комнаты */
         .indie-sofa {
             position: absolute;
             bottom: 60px;
@@ -79,7 +75,6 @@
             border-radius: 8px 8px 0 0;
         }
 
-        /* Узорчатый коврик на полу */
         .indie-rug {
             position: absolute;
             bottom: 15px;
@@ -92,7 +87,6 @@
             background-image: repeating-linear-gradient(90deg, transparent, transparent 12px, #1a1a1a 12px, #1a1a1a 14px);
         }
         
-        /* Перетаскиваемый кот */
         .cat-photo {
             width: 100px;
             height: 100px;
@@ -107,7 +101,6 @@
         }
         .cat-photo:active { cursor: grabbing; }
         
-        /* Мяч с физикой */
         .toy-ball {
             position: absolute;
             width: 38px;
@@ -120,7 +113,6 @@
             will-change: transform;
         }
         
-        /* Шкалы */
         .status-bar { margin: 12px 0; text-align: left; }
         .label { font-weight: bold; color: #1a1a1a; font-size: 13px; margin-bottom: 4px; }
         .progress-bg { background: #e0e0e0; border: 2px solid #1a1a1a; border-radius: 6px; height: 14px; overflow: hidden; }
@@ -153,10 +145,7 @@
         </div>
         <div class="indie-rug"></div>
 
-        <!-- Кот -->
         <img id="catImg" class="cat-photo" src="MVIMG_20261008_193929.jpg" alt="Мой Кот" style="left: 170px; top: 110px;">
-        
-        <!-- Мяч -->
         <div id="ball" class="toy-ball">⚽</div>
     </div>
     
@@ -194,35 +183,28 @@
     const joyTxt = document.getElementById('joy-txt');
     const joyBar = document.getElementById('joy-bar');
 
-    // Размеры новой просторной комнаты
     const roomWidth = 440; 
     const roomHeight = 340;
 
-    // Настройки физики мяча
     let ballX = 40; let ballY = 280;
     let vx = 0; let vy = 0;
     const radius = 19; const friction = 0.98; const bounce = -0.75;
 
-    // Настройки перетаскивания кота
     let catX = 170; let catY = 110;
     const catRadius = 50; 
     let isDragging = false;
     let startX, startY;
 
-    // Перетаскивание кота (Drag and Drop)
     catImg.addEventListener('mousedown', startDrag);
     catImg.addEventListener('touchstart', startDrag, { passive: false });
 
     function startDrag(e) {
         isDragging = true;
         msgEl.innerText = 'Басик летит по комнате! ☁️';
-        
         let clientX = e.clientX || e.touches.clientX;
         let clientY = e.clientY || e.touches.clientY;
-        
         startX = clientX - catX;
         startY = clientY - catY;
-        
         document.addEventListener('mousemove', drag);
         document.addEventListener('touchmove', drag, { passive: false });
         document.addEventListener('mouseup', stopDrag);
@@ -232,20 +214,15 @@
     function drag(e) {
         if (!isDragging) return;
         if(e.cancelable) e.preventDefault();
-
         let clientX = e.clientX || e.touches.clientX;
         let clientY = e.clientY || e.touches.clientY;
-
         let rect = room.getBoundingClientRect();
         let targetX = clientX - rect.left - startX;
         let targetY = clientY - rect.top - startY;
-
         catX = Math.max(0, Math.min(roomWidth - catRadius * 2, targetX));
         catY = Math.max(0, Math.min(roomHeight - catRadius * 2, targetY));
-
         catImg.style.left = catX + 'px';
         catImg.style.top = catY + 'px';
-        
         if (catY > 200 && catX > 100 && catX < 240) {
             msgEl.innerText = 'Басик уютно устроился на коврике! 🐾';
         }
@@ -256,34 +233,24 @@
         isDragging = false;
         document.removeEventListener('mousemove', drag);
         document.removeEventListener('touchmove', drag);
-        
-        if (joy < 100) {
-            joy = Math.min(100, joy + 5);
-            updateUI();
-        }
+        if (joy < 100) { joy = Math.min(100, joy + 5); updateUI(); }
     }
 
-    // Полноценный игровой цикл обновлений
     function updateGame() {
-        // Движение мяча
         ballX += vx; ballY += vy;
         vx *= friction; vy *= friction;
-
         if (Math.abs(vx) < 0.05) vx = 0;
         if (Math.abs(vy) < 0.05) vy = 0;
 
-        // Отскоки от стен комнаты
         if (ballX < 0) { ballX = 0; vx *= bounce; }
         else if (ballX > roomWidth - radius * 2) { ballX = roomWidth - radius * 2; vx *= bounce; }
         if (ballY < 0) { ballY = 0; vy *= bounce; }
         else if (ballY > roomHeight - radius * 2) { ballY = roomHeight - radius * 2; vy *= bounce; }
 
-        // Расчет столкновения мяча с котом
         let ballCenterX = ballX + radius;
         let ballCenterY = ballY + radius;
         let catCenterX = catX + catRadius;
         let catCenterY = catY + catRadius;
-
         let dx = ballCenterX - catCenterX;
         let dy = ballCenterY - catCenterY;
         let distance = Math.sqrt(dx * dx + dy * dy);
@@ -291,72 +258,19 @@
 
         if (distance < minDistance) {
             let angle = Math.atan2(dy, dx);
+            ballX = catCenterX + Math.cos(angle) * minDistance - radius;
+            ballY = catCenterY + Math.sin(angle) * minDistance - radius;
+            let speed = Math.sqrt(vx * vx + vy * vy) + 3;
+            if(speed < 4) speed = 6;
+            vx = Math.cos(angle) * speed;
+            vy = Math.sin(angle) * speed;
+            triggerCatJoy('Басик круто отбил катящийся мяч! ⚽⚡', 'scale(1.15)');
+            if (joy < 100) { joy = Math.min(100, joy + 15); updateUI(); }
+        }
+        ball.style.transform = `translate(${ballX}px, ${ballY}px) rotate(${ballX * 2}deg)`;
+        requestAnimationFrame(updateGame);
+    }
 
-ballX = catCenterX + Math.cos(angle) * minDistance - radius;
-ballY = catCenterY + Math.sin(angle) * minDistance - radius;
-let speed = Math.sqrt(vx * vx + vy * vy) + 3;
-if(speed < 4) speed = 6;
-vx = Math.cos(angle) * speed;
-vy = Math.sin(angle) * speed;
-triggerCatJoy('Басик круто отбил катящийся мяч! ⚽⚡', 'scale(1.15)');
-if (joy < 100) { joy = Math.min(100, joy + 15); updateUI(); }
-}
-// Рендеринг положения мяча
-ball.style.transform = translate(${ballX}px, ${ballY}px) rotate(${ballX * 2}deg);
-requestAnimationFrame(updateGame);
-}
-// Пинок мяча
-ball.addEventListener('mousedown', kickBall);
-ball.addEventListener('touchstart', (e) => { e.preventDefault(); kickBall(e); });
-function kickBall() {
-vx = (Math.random() - 0.5) * 22;
-vy = -(Math.random() * 12 + 10);
-msgEl.innerText = 'Бабах! Мяч полетел по комнате рикошетом! 🚀';
-if (joy < 100) { joy = Math.min(100, joy + 5); updateUI(); }
-}
-function updateUI() {
-satTxt.innerText = satiety;
-satBar.style.width = satiety + '%';
-satBar.style.backgroundColor = satiety > 50 ? '#737373' : (satiety > 20 ? '#a3a3a3' : '#d4d4d4');
-joyTxt.innerText = joy;
-joyBar.style.width = joy + '%';
-joyBar.style.backgroundColor = joy > 50 ? '#262626' : (joy > 20 ? '#525252' : '#737373');
-if (satiety <= 0 && joy <= 0) {
-catImg.style.filter = 'blur(1px) contrast(0.6)';
-msgEl.innerText = 'Басик загрустил... Поиграй с ним в мяч!';
-} else {
-catImg.style.filter = 'none';
-}
-}
-function feed() {
-if (satiety < 100) {
-satiety = Math.min(100, satiety + 20);
-triggerCatJoy('Хрум! Басик сытно кушает рыбку! 🐟', 'scale(1.1)');
-updateUI();
-}
-}
-function pet() {
-if (joy < 100) {
-joy = Math.min(100, joy + 15);
-triggerCatJoy('Муррр! Кот довольно жмурится! 👋', 'rotate(7deg)');
-updateUI();
-}
-}
-function triggerCatJoy(messageText, transformAnimation) {
-if (isDragging) return;
-catImg.src = HAPPY_IMG;
-msgEl.innerText = messageText;
-catImg.style.transform = transformAnimation;
-setTimeout(() => {
-catImg.src = NORMAL_IMG;
-catImg.style.transform = 'none';
-}, 1200);
-}
-setInterval(() => {
-satiety = Math.max(0, satiety - 2);
-joy = Math.max(0, joy - 2);
-updateUI();
-}, 4000);
-// Запуск
-updateGame();
-updateUI();
+    ball.addEventListener('mousedown', kickBall);
+    ball.addEventListener('touchstart', (e) => { e.preventDefault(); kickBall(); });
+
